@@ -52,33 +52,66 @@
     	# in int_array
     	li		$t0,	0					#t0 = 0, bien dem
     	
-    	#bat dau vong lap
-    	loop:
-		# in lan lap thu
-		move	$a0,	$t0
-		addi    $v0,    $zero,      1		#goi he thong print integer
-		syscall
+    	#bat dau vong lap de in day so da cho
+    	lap_in_day_so_da_cho:
+			# in lan lap thu
+			move	$a0,	$t0
+			addi    $v0,    $zero,      1		#goi he thong print integer
+			syscall
 		
-		# in hai cham
-    	addi    $a0,    $zero,      ':'
-    	addi    $v0,    $zero,      11
-    	syscall 
+			# in hai cham
+    		addi    $a0,    $zero,      ':'
+    		addi    $v0,    $zero,      11
+	    	syscall 
     	
-    	#in gia tri lan lap
-		lb		$t4,	int_array($t0)
-		subi	$t4,	$t4,		48			
-		move	$a0,	$t4
-		addi    $v0,    $zero,      1
-		syscall
+    		#in gia tri lan lap
+			lb		$t1,	int_array($t0)		#ra duoc ket qua nhung o dang dex
+			subi	$t1,	$t1,		48		#t4 -=48 de lay ket qua o dang so
+			move	$a0,	$t1
+			addi    $v0,    $zero,      1		#in so nguyen do ra man hinh
+			syscall
 		
-    	# in xuong dong
-    	addi    $a0,    $zero,      '\n'
-    	addi    $v0,    $zero,      11
-    	syscall 
+    		# in xuong dong
+    		addi    $a0,    $zero,      '\n'
+	    	addi    $v0,    $zero,      11
+    		syscall 
     	
-    	addi	$t0,	$t0,		1		#t0++
-    	blt		$t0,	40,			loop	#lap lai khi chua het mang
-    	#ket thuc vong lap
+    		addi	$t0,	$t0,		1		#t0++
+	    	blt		$t0,	40,			lap_in_day_so_da_cho	#lap lai khi chua het mang
+    	# Ket thuc vong lap
+    	
+    	# in hang dau tien
+    	li		$t0,	1			# bien dieu khien lap
+    	
+    	# bat dau lap in hang dau tien
+    	lap_in_hang:
+    		# in lan lap thu
+			move	$a0,	$t0
+			addi    $v0,    $zero,      1		#goi he thong print integer
+			syscall
+		
+			# in hai cham
+    		addi    $a0,    $zero,      ':'
+    		addi    $v0,    $zero,      11
+	    	syscall 
+    	
+    		#in gia tri lan lap
+			lb		$t1,	int_array($t0)		#ra duoc ket qua nhung o dang dex
+			subi	$t1,	$t1,		48		#t4 -=48 de lay ket qua o dang so
+			
+		
+    		# in xuong dong
+    		addi    $a0,    $zero,      '\n'
+	    	addi    $v0,    $zero,      11
+    		syscall 
+    	
+    		addi	$t0,	$t0,		1		#t0++
+	    	blt		$t0,	40,			lap_in_day_so_da_cho	#lap lai khi chua het mang
+    	# Ket thuc vong lap
+    	
+    	
+    	
+    	# Ket thuc chuong trinh
     	j       Kthuc
 	
 	baoloi: 
