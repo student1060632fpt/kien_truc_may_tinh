@@ -5,7 +5,7 @@
 .data
   # Cac dinh nghia bien
   		#	Cac dinh nghia bien - doc file
-	  	int_array:		.space 40	#mang
+	  	int_array:		.byte 40	#mang
   		tenfile:		.asciiz "F:/STRING.TXT"
   		file_descriptor: .word 0
   		
@@ -14,7 +14,6 @@
     # Cac cau nhac nhap/xuat du lieu
   str_dl1: .asciiz "Mang da cho = "
   str_loi: .asciiz "Mo file bi loi."
-  str_thanhcong:	.asciiz "Mo file thanh cong\n"
   # -----------------------------------
   # Code segment
 .text
@@ -47,13 +46,28 @@
   		# Xuat ket qua (syscall)
 		# In lenh: "Mang da cho: "
     	la      $a0,    str_dl1
-    	addi    $v0,    $zero,      1
+    	addi    $v0,    $zero,      4		#goi he thong print mang
     	syscall 
     	
     	# in int_array
-    	lw      $a0,    int_array
-    	addi    $v0,    $zero,      4
+    	li		$t0,	0					#t0 = 0, bien dem
+    	
+    	#bat dau vong lap
+    	loop:
+		addi    $v0,    $zero,      4		#goi he thong print integer
+		li		$t1,	13
+		lw		$a0,	int_array($t0)
+		#li		$t2,	26851024			#dia chi chua int_array[0]
+    	#li		$a0,	26851024					#goi phan tu int_array[t0]
+    	syscall
+    	# xuong dong
+    	addi    $a0,    $zero,      '\n'
+    	addi    $v0,    $zero,      11
     	syscall 
+    	
+    	addi	$t0,	$t0,		4		#t0++
+    	blt		$t0,	40,			loop	#lap lai khi chua het mang
+    	#ket thuc vong lap
     	j       Kthuc
 	
 	baoloi: 
