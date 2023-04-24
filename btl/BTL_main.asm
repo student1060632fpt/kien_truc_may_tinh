@@ -10,7 +10,7 @@
   		file_descriptor: .word 0
   		
   		#	Cac dinh nghia bien - cho chuong trinh
-		
+		sao:			.asciiz "*"
     # Cac cau nhac nhap/xuat du lieu
   str_dl1: .asciiz "Mang da cho: \n"
   str_loi: .asciiz "Mo file bi loi."
@@ -54,66 +54,64 @@
     	
     	#bat dau vong lap de in day so da cho
     	lap_in_day_so_da_cho:
-			# in lan lap thu
-			move	$a0,	$t0
-			addi    $v0,    $zero,      1		#goi he thong print integer
-			syscall
-		
-			# in hai cham
-    		addi    $a0,    $zero,      ':'
-    		addi    $v0,    $zero,      11
-	    	syscall 
-    	
+			
     		#in gia tri lan lap
 			lb		$t1,	int_array($t0)		#ra duoc ket qua nhung o dang dex
 			subi	$t1,	$t1,		48		#t4 -=48 de lay ket qua o dang so
 			move	$a0,	$t1
 			addi    $v0,    $zero,      1		#in so nguyen do ra man hinh
 			syscall
-		
-    		# in xuong dong
-    		addi    $a0,    $zero,      '\n'
-	    	addi    $v0,    $zero,      11
-    		syscall 
-    	
-    		addi	$t0,	$t0,		1		#t0++
-	    	blt		$t0,	40,			lap_in_day_so_da_cho	#lap lai khi chua het mang
-    	# Ket thuc vong lap
-    	
-    	# in hang dau tien
-    	li		$t0,	1			# bien dieu khien lap
-    	
-    	# bat dau lap in hang dau tien
-    	lap_in_hang:
-    		# in lan lap thu
-			move	$a0,	$t0
-			addi    $v0,    $zero,      1		#goi he thong print integer
-			syscall
-		
-			# in hai cham
-    		addi    $a0,    $zero,      ':'
-    		addi    $v0,    $zero,      11
-	    	syscall 
-    	
-    		#in gia tri lan lap
-			lb		$t1,	int_array($t0)		#ra duoc ket qua nhung o dang dex
-			subi	$t1,	$t1,		48		#t4 -=48 de lay ket qua o dang so
 			
-		
+    		addi	$t0,	$t0,		1		#t0++
+	    	blt		$t0,	40,			lap_in_day_so_da_cho	#lap lai khi chua het mang
+    	# Ket thuc vong lap
+
+    	# Lap in tat ca cac hang sao
+    	li		$t5,	1
+    	lap_in_het:
     		# in xuong dong
     		addi    $a0,    $zero,      '\n'
 	    	addi    $v0,    $zero,      11
     		syscall 
     	
-    		addi	$t0,	$t0,		1		#t0++
-	    	blt		$t0,	40,			lap_in_day_so_da_cho	#lap lai khi chua het mang
-    	# Ket thuc vong lap
+	    	# in hang dau tien
+    		li		$t0,	0						# bien dieu khien lap
     	
+    		# bat dau lap in hang dau tien
+	    	lap_in_hang:
+    		
+    			#in gia tri lan lap
+				lb		$t1,	int_array($t0)		#ra duoc ket qua nhung o dang dex
+				subi	$t1,	$t1,		48		#t4 -=48 de lay ket qua o dang so
+				
+
+				bgt		$t1,	$t5,		in_sao	# t1 <= so lan lap -> Dung: *, Sai: rong 0
+				beq		$t1,	$t5,		in_sao
+				# Sai: in rong
+				addi	$v0,	$zero,		11
+				addi    $a0,    $zero,      '_'
+				syscall		
+				tiep_tuc_sau_in_sao:
+			
+    			addi	$t0,	$t0,		1		#t0++
+	    		blt		$t0,	40,			lap_in_hang	#lap lai khi chua het mang
+    		# Ket thuc vong lap in hang
+    		
+    		addi	$t5,	$t5,		1			#t5++
+	    	blt		$t5,	10,			lap_in_het	#lap lai khi chua het mang
     	
     	
     	# Ket thuc chuong trinh
     	j       Kthuc
 	
+	# In hang dau co sao
+	in_sao:
+		addi	$v0,	$zero,		4
+		la		$a0,	sao				
+		syscall
+		j		tiep_tuc_sau_in_sao
+	
+	# Doc file fail -> bao loi file
 	baoloi: 
 		la $a0,str_loi
     	addi    $v0,    $zero,      4
